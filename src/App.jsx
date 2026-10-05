@@ -1,10 +1,16 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import Catalog from "./components/Catalog.jsx";
 import Recommendations from "./components/Recommendations.jsx";
-import CommunityQA from "./components/CommunityQA.jsx";
-import { comics, communityThreads } from "./data/comics.js";
+import ComunidadeLayout from "./components/ComunidadeLayout.jsx";
+import { comics } from "./data/comics.js";
+
+function getReadingReward(authorLevel) {
+  if (authorLevel === "Iniciante") return 50;
+  if (authorLevel === "Em Ascensão") return 20;
+  return 10;
+}
 
 function App() {
   // useState responsável por guardar o saldo atual do leitor.
@@ -28,6 +34,13 @@ function App() {
     minPrice: 0,
     maxPrice: 40
   });
+  const [route, setRoute] = useState(() => window.location.hash.slice(1) || "inicio");
+
+  useEffect(() => {
+    const handleHashChange = () => setRoute(window.location.hash.slice(1) || "inicio");
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   // Função genérica para alterar campos simples do objeto de filtros.
   // Usamos o spread (...currentFilters) para preservar os outros filtros já selecionados.
@@ -68,20 +81,6 @@ function App() {
     });
   }
 
-  // Função de regra de negócio para pontuação.
-  // Ela traduz o nível do autor em uma recompensa para incentivar a leitura de autores menores.
-  function getReadingReward(authorLevel) {
-    if (authorLevel === "Iniciante") {
-      return 50;
-    }
-
-    if (authorLevel === "Em Ascensão") {
-      return 20;
-    }
-
-    return 10;
-  }
-
   // Função executada quando o leitor clica em "Simular leitura".
   // O React recebe o saldo anterior e soma a recompensa calculada pelo nível do autor.
   function handleReadComic(comic) {
@@ -113,27 +112,32 @@ function App() {
   return (
     <div className="app-shell">
       <Header readerPoints={readerPoints} />
-      <main>
-        <Hero />
-        <Catalog
-          comics={filteredComics}
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onTogglePriceType={togglePriceType}
-          onToggleLevel={toggleLevel}
-          onReadComic={handleReadComic}
-        />
-        <Recommendations comics={comics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
-        <CommunityQA threads={communityThreads} />
-      </main>
-      <footer className="site-footer">
-        <div className="footer-links">
-          <a href="#inicio">Início</a>
-          <a href="#catalogo">Catálogo</a>
-          <a href="#comunidade">Comunidade</a>
-        </div>
-        <p>&copy; 2026 HQLivre. Todos os direitos reservados.</p>
-      </footer>
+      {route === "comunidade" ? (
+        <ComunidadeLayout />
+      ) : (
+        <main>
+          <Hero />
+          <Catalog
+            comics={filteredComics}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onTogglePriceType={togglePriceType}
+            onToggleLevel={toggleLevel}
+            onReadComic={handleReadComic}
+          />
+          <Recommendations comics={comics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
+        </main>
+      )}
+      {route !== "comunidade" && (
+        <footer className="site-footer">
+          <div className="footer-links">
+            <a href="#inicio">Início</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#comunidade">Comunidade</a>
+          </div>
+          <p>&copy; 2026 HQLivre. Todos os direitos reservados.</p>
+        </footer>
+      )}
     </div>
   );
 }
