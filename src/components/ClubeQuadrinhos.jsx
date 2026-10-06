@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { communities } from "../data/community.js";
 import TopicoForum from "./TopicoForum.jsx";
 
@@ -53,7 +54,7 @@ function ClubeQuadrinhos() {
               <div className="community-card-top"><span className={`privacy-badge ${community.privacy.toLowerCase()}`}>{community.privacy}</span><span className="role-badge">{community.role}</span></div>
               <h3>{community.name}</h3>
               <p>{community.description}</p>
-              <div className="community-card-footer"><span>✦ {community.members.toLocaleString("pt-BR")} membros</span><button type="button" onClick={() => setSelectedCommunity(community)}>Entrar</button></div>
+              <div className="community-card-footer"><span>✦ {community.members.toLocaleString("pt-BR")} membros</span><Link to={`/comunidade/clube/${community.id}`}>Entrar</Link></div>
             </div>
           </article>
         ))}

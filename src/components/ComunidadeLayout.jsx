@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import CommunityQA from "./CommunityQA.jsx";
 import ClubeQuadrinhos from "./ClubeQuadrinhos.jsx";
 import FanartMural from "./FanartMural.jsx";
@@ -20,7 +21,7 @@ function ComunidadeLayout() {
           <h1>Crie, aprenda e compartilhe.</h1>
           <p>Um espaço para autores, leitores e artistas independentes.</p>
         </div>
-        <a className="secondary-button" href="#inicio">← Voltar para o Catálogo</a>
+        <Link className="secondary-button" to="/">← Voltar para o Catálogo</Link>
       </header>
 
       <div className="community-layout">

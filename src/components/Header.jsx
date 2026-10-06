@@ -1,14 +1,16 @@
+import { Link } from "react-router-dom";
+
 function Header({ readerPoints }) {
   return (
     <header className="site-header">
-      <a className="logo" href="#inicio" aria-label="HQLivre - Início">
+      <Link className="logo" to="/" aria-label="HQLivre - Início">
         HQLivre
-      </a>
+      </Link>
 
       <nav className="main-nav" aria-label="Navegação principal">
-        <a href="#inicio">Início</a>
-        <a href="#catalogo">Catálogo</a>
-        <a href="#comunidade">Comunidade</a>
+        <Link to="/">Início</Link>
+        <a href="/#catalogo">Catálogo</a>
+        <Link to="/comunidade">Comunidade</Link>
       </nav>
 
       <div className="reader-points" aria-label="Saldo de pontos do leitor">
