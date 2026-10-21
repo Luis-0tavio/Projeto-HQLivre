@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/autenticacao_provider.jsx";
 
 function Header({ readerPoints }) {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   return (
     <header className="site-header">
       <Link className="logo" to="/" aria-label="HQLivre - Início">
@@ -16,6 +19,25 @@ function Header({ readerPoints }) {
       <div className="reader-points" aria-label="Saldo de pontos do leitor">
         <span>Saldo de Pontos</span>
         <strong>{readerPoints}</strong>
+      </div>
+
+      <div className="profile">
+        {loading ? (
+          <span className="profile-status">Verificando sessão...</span>
+        ) : user ? (
+          <>
+            <span className="profile-email" title={user.email}>
+              {user.email}
+            </span>
+            <button className="btn_ES" type="button" onClick={() => signOut()}>
+              Sair
+            </button>
+          </>
+        ) : (
+          <button className="btn_ES" type="button" onClick={() => navigate("/login")}>
+            Entrar
+          </button>
+        )}
       </div>
     </header>
   );

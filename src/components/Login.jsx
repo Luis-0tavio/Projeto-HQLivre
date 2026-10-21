@@ -1,8 +1,10 @@
 import "../Login.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase.js";
 
 function Login() {
+    const navigate = useNavigate();
     const [message, setMessage] = useState("");
 
     const [isRegistering, setIsRegistering] = useState(false);
@@ -40,6 +42,7 @@ function Login() {
             }
 
             setMessage("Login realizado com sucesso.");
+            navigate("/");
             }
 
 return (
