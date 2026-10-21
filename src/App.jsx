@@ -7,6 +7,7 @@ import Recommendations from "./components/Recommendations.jsx";
 import ComunidadeLayout from "./components/ComunidadeLayout.jsx";
 import ClubeDetalhe from "./components/ClubeDetalhe.jsx";
 import { comics } from "./data/comics.js";
+import Login from "./components/Login.jsx";
 
 function getReadingReward(authorLevel) {
   if (authorLevel === "Iniciante") return 50;
@@ -124,6 +125,7 @@ function App() {
         } />
         <Route path="/comunidade" element={<ComunidadeLayout />} />
         <Route path="/comunidade/clube/:clubId" element={<ClubeDetalhe />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       <footer className="site-footer">
         <div className="footer-links">
