@@ -42,7 +42,7 @@ function Login() {
             }
 
             setMessage("Login realizado com sucesso.");
-            navigate("/");
+            navigate("/perfil");
             }
 
 return (
