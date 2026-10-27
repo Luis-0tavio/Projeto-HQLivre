@@ -14,6 +14,7 @@ function Header({ readerPoints }) {
         <Link to="/">Início</Link>
         <a href="/#catalogo">Catálogo</a>
         <Link to="/comunidade">Comunidade</Link>
+        {user && <Link to="/perfil">Perfil</Link>}
       </nav>
 
       <div className="reader-points" aria-label="Saldo de pontos do leitor">
