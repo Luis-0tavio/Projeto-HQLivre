@@ -6,6 +6,7 @@ import Catalog from "./components/Catalog.jsx";
 import Recommendations from "./components/Recommendations.jsx";
 import ComunidadeLayout from "./components/ComunidadeLayout.jsx";
 import ClubeDetalhe from "./components/ClubeDetalhe.jsx";
+import FanartMural from "./components/FanartMural.jsx";
 import { comics } from "./data/comics.js";
 import Login from "./components/Login.jsx";
 import Perfil from "./components/Perfil.jsx";
@@ -126,6 +127,7 @@ function App() {
         } />
         <Route path="/comunidade" element={<ComunidadeLayout />} />
         <Route path="/comunidade/clube/:clubId" element={<ClubeDetalhe />} />
+        <Route path="/fanarts" element={<main className="fanart-page"><FanartMural /></main>} />
         <Route path="/login" element={<Login />} />
         <Route path="/perfil" element={<Perfil />} />
       </Routes>
@@ -134,6 +136,7 @@ function App() {
           <a href="/">Início</a>
           <a href="/#catalogo">Catálogo</a>
           <a href="/comunidade">Comunidade</a>
+          <a href="/fanarts">Fanarts</a>
         </div>
         <p>&copy; 2026 HQLivre. Todos os direitos reservados.</p>
       </footer>

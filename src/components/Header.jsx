@@ -14,6 +14,7 @@ function Header({ readerPoints }) {
         <Link to="/">Início</Link>
         <a href="/#catalogo">Catálogo</a>
         <Link to="/comunidade">Comunidade</Link>
+        <Link to="/fanarts">Fanarts</Link>
         {user && <Link to="/perfil">Perfil</Link>}
       </nav>
 
