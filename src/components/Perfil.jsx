@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+  import { useEffect, useState } from "react";
 import { useAuth } from "../context/autenticacao_provider.jsx";
 import { supabase } from "../lib/supabase.js";
+import { useLocation } from "react-router-dom";
 
 function Perfil() {
   const { user } = useAuth();
   const [perfil, setPerfil] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [aba, setAba] = useState("perfil");
+  const location = useLocation();
+  const [aba, setAba] = useState(location.state?.iniciarConfiguracao ? "editar" : "perfil"
+);
   const [form, setForm] = useState({
     nome: "",
     bio: "",
