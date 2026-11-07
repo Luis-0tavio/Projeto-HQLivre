@@ -10,6 +10,7 @@ import FanartMural from "./components/FanartMural.jsx";
 import { comics } from "./data/comics.js";
 import Login from "./components/Login.jsx";
 import Perfil from "./components/Perfil.jsx";
+import { useAuth } from "./context/autenticacao_provider.jsx";
 
 function getReadingReward(authorLevel) {
   if (authorLevel === "Iniciante") return 50;
@@ -22,14 +23,7 @@ function App() {
   // Toda vez que o usuário clicar em "Simular leitura", este estado será atualizado.
   const [readerPoints, setReaderPoints] = useState(0);
 
-  // useState que simula o tipo de usuário.
-  // Se for true, a seção "Pode gostar" prioriza autores iniciantes.
-  // Em uma aplicação real, isso viria de autenticação, data de cadastro ou histórico de leitura.
-  const [isNewUser] = useState(true);
-
-  // useState que representa o gosto principal do leitor.
-  // Mantemos este valor simples para demonstrar a regra de recomendação quando isNewUser for false.
-  const [favoriteGenre] = useState("Fantasia");
+  const {isNewUser , favoriteGenre } = useAuth();
 
   // useState central dos filtros do catálogo.
   // O objeto concentra todos os filtros para facilitar a leitura e o envio para componentes filhos.

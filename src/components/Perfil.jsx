@@ -2,9 +2,11 @@
 import { useAuth } from "../context/autenticacao_provider.jsx";
 import { supabase } from "../lib/supabase.js";
 import { useLocation } from "react-router-dom";
+import Recommendations from "./Recommendations.jsx";
+import { comics } from "../data/comics.js";
 
 function Perfil() {
-  const { user } = useAuth();
+  const { user, isNewUser, favoriteGenre } = useAuth();
   const [perfil, setPerfil] = useState(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -227,6 +229,7 @@ function Perfil() {
           </button>
         </form>
       )}
+      <Recommendations comics={comics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
     </main>
   );
 }
