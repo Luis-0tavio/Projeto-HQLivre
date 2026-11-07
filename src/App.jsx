@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import Catalog from "./components/Catalog.jsx";
@@ -10,7 +10,8 @@ import FanartMural from "./components/FanartMural.jsx";
 import { comics } from "./data/comics.js";
 import Login from "./components/Login.jsx";
 import Perfil from "./components/Perfil.jsx";
-import { useAuth } from "./context/autenticacao_provider.jsx";
+import Reader from "./components/Reader.jsx";
+import PublishComic from "./components/PublishComic.jsx";
 
 function getReadingReward(authorLevel) {
   if (authorLevel === "Iniciante") return 50;
@@ -19,11 +20,21 @@ function getReadingReward(authorLevel) {
 }
 
 function App() {
+  const navigate = useNavigate();
   // useState responsável por guardar o saldo atual do leitor.
   // Toda vez que o usuário clicar em "Simular leitura", este estado será atualizado.
   const [readerPoints, setReaderPoints] = useState(0);
+  const [completedComicIds, setCompletedComicIds] = useState(() => new Set());
+  const [catalogComics, setCatalogComics] = useState(() => comics);
 
-  const {isNewUser , favoriteGenre } = useAuth();
+  // useState que simula o tipo de usuário.
+  // Se for true, a seção "Pode gostar" prioriza autores iniciantes.
+  // Em uma aplicação real, isso viria de autenticação, data de cadastro ou histórico de leitura.
+  const [isNewUser] = useState(true);
+
+  // useState que representa o gosto principal do leitor.
+  // Mantemos este valor simples para demonstrar a regra de recomendação quando isNewUser for false.
+  const [favoriteGenre] = useState("Fantasia");
 
   // useState central dos filtros do catálogo.
   // O objeto concentra todos os filtros para facilitar a leitura e o envio para componentes filhos.
@@ -31,7 +42,8 @@ function App() {
     priceTypes: ["free", "paid"],
     levels: ["Iniciante", "Em Ascensão", "Mestre", "Lendário"],
     minPrice: 0,
-    maxPrice: 40
+    maxPrice: 40,
+    search: ""
   });
 
   // Função genérica para alterar campos simples do objeto de filtros.
@@ -73,11 +85,36 @@ function App() {
     });
   }
 
-  // Função executada quando o leitor clica em "Simular leitura".
-  // O React recebe o saldo anterior e soma a recompensa calculada pelo nível do autor.
+  // O leitor recebe os pontos ao concluir uma HQ, no máximo uma vez por HQ nesta sessão.
   function handleReadComic(comic) {
+    navigate(`/leitura/${comic.id}`);
+  }
+
+  function handleCompleteReading(comic) {
+    if (completedComicIds.has(comic.id)) return 0;
+
     const reward = getReadingReward(comic.level);
     setReaderPoints((currentPoints) => currentPoints + reward);
+    setCompletedComicIds((currentIds) => new Set(currentIds).add(comic.id));
+    return reward;
+  }
+
+  function handlePublishComic({ title, author, genre, synopsis, coverUrl, interactive, pages }) {
+    const newComic = {
+      id: Date.now(),
+      title,
+      author,
+      price: 0,
+      level: "Iniciante",
+      genre,
+      synopsis,
+      interactive,
+      coverUrl: coverUrl || pages[0].previewUrl,
+      pages: pages.map((page) => ({ imageUrl: page.previewUrl, balloons: page.balloons ?? [] }))
+    };
+
+    setCatalogComics((currentComics) => [newComic, ...currentComics]);
+    navigate("/#catalogo");
   }
 
   // useMemo evita recalcular a lista filtrada em toda renderização sem necessidade.
@@ -91,15 +128,19 @@ function App() {
     // 2. Verifica se esse tipo está selecionado.
     // 3. Verifica se o nível do autor está selecionado.
     // 4. Verifica se o preço está dentro da faixa informada.
-    return comics.filter((comic) => {
+    return catalogComics.filter((comic) => {
       const comicPriceType = comic.price === 0 ? "free" : "paid";
       const matchesPriceType = filters.priceTypes.includes(comicPriceType);
       const matchesLevel = filters.levels.includes(comic.level);
       const matchesPriceRange = comic.price >= minPrice && comic.price <= maxPrice;
+      const searchTerm = filters.search.trim().toLocaleLowerCase("pt-BR");
+      const matchesSearch = !searchTerm ||
+        comic.title.toLocaleLowerCase("pt-BR").includes(searchTerm) ||
+        comic.author.toLocaleLowerCase("pt-BR").includes(searchTerm);
 
-      return matchesPriceType && matchesLevel && matchesPriceRange;
+      return matchesPriceType && matchesLevel && matchesPriceRange && matchesSearch;
     });
-  }, [filters]);
+  }, [filters, catalogComics]);
 
   return (
     <div className="app-shell">
@@ -116,11 +157,13 @@ function App() {
               onToggleLevel={toggleLevel}
               onReadComic={handleReadComic}
             />
-            <Recommendations comics={comics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
+            <Recommendations comics={catalogComics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
           </main>
         } />
         <Route path="/comunidade" element={<ComunidadeLayout />} />
         <Route path="/comunidade/clube/:clubId" element={<ClubeDetalhe />} />
+        <Route path="/publicar" element={<PublishComic onPublish={handlePublishComic} />} />
+        <Route path="/leitura/:comicId" element={<Reader comics={catalogComics} onComplete={handleCompleteReading} />} />
         <Route path="/fanarts" element={<main className="fanart-page"><FanartMural /></main>} />
         <Route path="/login" element={<Login />} />
         <Route path="/perfil" element={<Perfil />} />
