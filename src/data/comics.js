@@ -19,6 +19,51 @@ export const comics = [
     genre: "Fantasia",
     coverUrl: "https://placehold.co/360x520/172033/ffca3a/png?text=Guardiao+da+Aurora"
   },
+    {
+    id: 2,
+    title: "Guardião da Aurora",
+    author: "Mateus Koda",
+    price: 18,
+    level: "Mestre",
+    genre: "Fantasia",
+    coverUrl: "https://placehold.co/360x520/172033/ffca3a/png?text=Guardiao+da+Aurora"
+  },
+    {
+    id: 2,
+    title: "Guardião da Aurora",
+    author: "Mateus Koda",
+    price: 18,
+    level: "Mestre",
+    genre: "Fantasia",
+    coverUrl: "https://placehold.co/360x520/172033/ffca3a/png?text=Guardiao+da+Aurora"
+  },
+    {
+    id: 2,
+    title: "Guardião da Aurora",
+    author: "Mateus Koda",
+    price: 18,
+    level: "Mestre",
+    genre: "Fantasia",
+    coverUrl: "https://placehold.co/360x520/172033/ffca3a/png?text=Guardiao+da+Aurora"
+  },
+    {
+    id: 2,
+    title: "Guardião da Aurora",
+    author: "Mateus Koda",
+    price: 18,
+    level: "Mestre",
+    genre: "Fantasia",
+    coverUrl: "https://placehold.co/360x520/172033/ffca3a/png?text=Guardiao+da+Aurora"
+  },
+    {
+    id: 2,
+    title: "Guardião da Aurora",
+    author: "Mateus Koda",
+    price: 18,
+    level: "Mestre",
+    genre: "Fantasia",
+    coverUrl: "https://placehold.co/360x520/172033/ffca3a/png?text=Guardiao+da+Aurora"
+  },
   {
     id: 3,
     title: "Rua 47",
