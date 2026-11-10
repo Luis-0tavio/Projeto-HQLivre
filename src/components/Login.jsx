@@ -42,7 +42,7 @@ function Login() {
             }
 
             setMessage("Login realizado com sucesso.");
-            navigate("/perfil", { state: { iniciarConfiguracao: isRegistering } });
+            navigate("/perfil");
             }
 
 return (
