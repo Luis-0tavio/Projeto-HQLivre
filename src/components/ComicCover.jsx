@@ -1,14 +1,9 @@
 function ComicCover({ title, coverUrl }) {
-  const fallbackUrl = `https://picsum.photos/300/400?random=${encodeURIComponent(title)}`;
-
   return (
     <div className="comic-cover">
       <img
-        src={coverUrl || fallbackUrl}
+        src={`https://picsum.photos/300/400?random=${encodeURIComponent(title)}`}
         alt={`Capa da HQ ${title}`}
-        onError={(event) => {
-          if (event.currentTarget.src !== fallbackUrl) event.currentTarget.src = fallbackUrl;
-        }}
         style={{
           width: "100%",
           height: "250px",

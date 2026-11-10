@@ -20,19 +20,8 @@ function Catalog({
       </div>
 
       <div className="catalog-layout">
-        <label className="catalog-search">
-          <span>Pesquisar HQs</span>
-          <input
-            type="search"
-            value={filters.search}
-            onChange={(event) => onFilterChange("search", event.target.value)}
-            placeholder="Buscar por título ou autor..."
-          />
-        </label>
-
-        <details className="filters-disclosure">
-          <summary>Filtros avançados</summary>
-          <div className="filters-panel" aria-label="Filtros avançados">
+        <aside className="filters-panel" aria-label="Filtros avançados">
+          <h3>Filtros avançados</h3>
 
           <fieldset>
             <legend>Preço</legend>
@@ -55,30 +44,23 @@ function Catalog({
           </fieldset>
 
           <div className="price-range">
-            <div className="price-range-heading">
-              <strong>Faixa de preço</strong>
-              <span>R$ {filters.minPrice} — R$ {filters.maxPrice}</span>
-            </div>
-            <div className="price-slider">
-              <input
-                aria-label="Preço mínimo"
-                type="range"
-                min="0"
-                max="40"
-                step="1"
-                value={filters.minPrice}
-                onChange={(event) => onFilterChange("minPrice", Math.min(Number(event.target.value), Number(filters.maxPrice)))}
-              />
-              <input
-                aria-label="Preço máximo"
-                type="range"
-                min="0"
-                max="40"
-                step="1"
-                value={filters.maxPrice}
-                onChange={(event) => onFilterChange("maxPrice", Math.max(Number(event.target.value), Number(filters.minPrice)))}
-              />
-            </div>
+            <label htmlFor="minPrice">Preço mínimo</label>
+            <input
+              id="minPrice"
+              type="number"
+              min="0"
+              value={filters.minPrice}
+              onChange={(event) => onFilterChange("minPrice", event.target.value)}
+            />
+
+            <label htmlFor="maxPrice">Preço máximo</label>
+            <input
+              id="maxPrice"
+              type="number"
+              min="0"
+              value={filters.maxPrice}
+              onChange={(event) => onFilterChange("maxPrice", event.target.value)}
+            />
           </div>
 
           <fieldset>
@@ -94,8 +76,7 @@ function Catalog({
               </label>
             ))}
           </fieldset>
-          </div>
-        </details>
+        </aside>
 
         <div className="catalog-content">
           <p className="result-count">
@@ -113,7 +94,6 @@ function Catalog({
                     <div className="comic-text">
                       <h3>{comic.title}</h3>
                       <p>por {comic.author}</p>
-                      {comic.synopsis && <p className="comic-synopsis">{comic.synopsis}</p>}
                     </div>
                     <div className="comic-actions">
                       <div className="comic-meta">
@@ -122,7 +102,7 @@ function Catalog({
                         <span className="badge">Nível {comic.level}</span>
                       </div>
                       <button className="read-button" type="button" onClick={() => onReadComic(comic)}>
-                        Começar leitura
+                        Simular leitura
                       </button>
                     </div>
                   </div>

@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 function Hero() {
   return (
     <section id="inicio" className="hero-section">
@@ -10,9 +8,9 @@ function Hero() {
           Publique, descubra leitores e cresça com uma comunidade feita para
           valorizar autores de todos os níveis.
         </p>
-        <Link className="primary-button" to="/publicar">
+        <a className="primary-button" href="#catalogo">
           Poste sua HQ gratuitamente
-        </Link>
+        </a>
       </div>
     </section>
   );

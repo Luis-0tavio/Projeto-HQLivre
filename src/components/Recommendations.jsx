@@ -4,10 +4,14 @@ function Recommendations({ comics, isNewUser, favoriteGenre }) {
   // Regra de negócio de recomendação:
   // - Usuário novo recebe visibilidade de autores iniciantes.
   // - Usuário recorrente recebe sugestões baseadas no gosto do usuário.
-  const recommendedComics = isNewUser
-    ? comics.filter((comic) => comic.level === "Iniciante")
-    : comics.filter((comic) => comic.genre === favoriteGenre || ["Mestre", "Lendário"].includes(comic.level));
+  const doGenero = comics.filter((comic) => comic.genre === favoriteGenre);
+const deNivelAlto = comics.filter(
+  (comic) =>
+    ["Mestre", "Lendário"].includes(comic.level) &&
+    comic.genre !== favoriteGenre
+);
 
+const recommendedComics = isNewUser ? comics.filter((comic) => comic.level === "Iniciante") : [...doGenero, ...deNivelAlto].slice(0, 5);
   return (
     <section className="recommendations-section" aria-labelledby="recommendationsTitle">
       <div className="section-heading">
@@ -22,7 +26,7 @@ function Recommendations({ comics, isNewUser, favoriteGenre }) {
       </p>
 
       <div className="recommendations-grid">
-        {recommendedComics.slice(0, 4).map((comic) => (
+        {recommendedComics.slice(0, 5).map((comic) => (
           <article className="recommendation-card" key={comic.id}>
             <ComicCover title={comic.title} coverUrl={comic.coverUrl} />
             <div>
