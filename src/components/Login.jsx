@@ -19,19 +19,29 @@ function Login() {
             setMessage("Verificando seus dados...");
             
             if(isRegistering) {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                 email,
                 password
                 });
                 if (error) {
                 setMessage(`Não foi possível criar a conta: ${error.message}`);
                 return;
-                }else{
-                    setMessage("Conta criada com sucesso. Você já pode entrar.");
                 }
+
+                if (data.session) {
+                    setMessage("Conta criada com sucesso.");
+                    navigate("/perfil", { state: { iniciarConfiguracao: true } });
+                    return;
+                }
+
+                if (data.user) {
+                    localStorage.setItem("hqlivre:profile-setup-user-id", data.user.id);
+                }
+                setMessage("Conta criada. Confirme seu e-mail e entre para configurar seu perfil.");
+                return;
             }
 
-            const { error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password
             });
@@ -42,7 +52,14 @@ function Login() {
             }
 
             setMessage("Login realizado com sucesso.");
-            navigate("/perfil");
+            const setupUserId = localStorage.getItem("hqlivre:profile-setup-user-id");
+            const iniciarConfiguracao = setupUserId === data.user.id;
+
+            if (iniciarConfiguracao) {
+                localStorage.removeItem("hqlivre:profile-setup-user-id");
+            }
+
+            navigate("/perfil", { state: { iniciarConfiguracao } });
             }
 
 return (

@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/autenticacao_provider.jsx";
 import { supabase } from "../lib/supabase.js";
 import Recommendations from "./Recommendations.jsx";
+import { useLocation } from "react-router-dom";
 
 function Perfil({ comics }) {
   const { user, favoriteGenre: savedFavoriteGenre, setFavoriteGenre } = useAuth();
+  const location = useLocation();
   const [perfil, setPerfil] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [aba, setAba] = useState("perfil");
+  const [aba, setAba] = useState(() =>
+    location.state?.iniciarConfiguracao ? "editar" : "perfil"
+  );
   const [form, setForm] = useState({
     nome: "",
     bio: "",
@@ -126,6 +130,9 @@ function Perfil({ comics }) {
 
     setPerfil((prev) => ({ ...(prev || {}), ...payload }));
     setFavoriteGenre(payload.genero_preferido || "");
+    if (localStorage.getItem("hqlivre:profile-setup-user-id") === user.id) {
+      localStorage.removeItem("hqlivre:profile-setup-user-id");
+    }
     setAba("perfil");
   };
 
