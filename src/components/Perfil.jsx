@@ -1,17 +1,12 @@
-  import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/autenticacao_provider.jsx";
 import { supabase } from "../lib/supabase.js";
-import { useLocation } from "react-router-dom";
-import Recommendations from "./Recommendations.jsx";
-import { comics } from "../data/comics.js";
 
 function Perfil() {
-  const { user, isNewUser, favoriteGenre } = useAuth();
+  const { user } = useAuth();
   const [perfil, setPerfil] = useState(null);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
-  const [aba, setAba] = useState(location.state?.iniciarConfiguracao ? "editar" : "perfil"
-);
+  const [aba, setAba] = useState("perfil");
   const [form, setForm] = useState({
     nome: "",
     bio: "",
@@ -229,7 +224,6 @@ function Perfil() {
           </button>
         </form>
       )}
-      <Recommendations comics={comics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
     </main>
   );
 }
