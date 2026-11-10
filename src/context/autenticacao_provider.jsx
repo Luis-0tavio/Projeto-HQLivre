@@ -6,6 +6,9 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [favoriteGenre, setFavoriteGenre] = useState("");
+
+  const user = session?.user ?? null;
 
   useEffect(() => {
     const {
@@ -20,13 +23,48 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadFavoriteGenre() {
+      if (!user) {
+        setFavoriteGenre("");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("genero_preferido")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!active) return;
+
+      if (error) {
+        console.error("Erro ao carregar gênero favorito:", error);
+        setFavoriteGenre("");
+        return;
+      }
+
+      setFavoriteGenre(data?.genero_preferido?.trim() || "");
+    }
+
+    loadFavoriteGenre();
+
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
+
   const signOut = () => supabase.auth.signOut();
 
   return (
     <AuthContext.Provider
       value={{
         session,
-        user: session?.user ?? null,
+        user,
+        favoriteGenre,
+        setFavoriteGenre,
         loading,
         signOut,
       }}

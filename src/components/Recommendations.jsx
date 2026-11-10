@@ -4,9 +4,19 @@ function Recommendations({ comics, isNewUser, favoriteGenre }) {
   // Regra de negócio de recomendação:
   // - Usuário novo recebe visibilidade de autores iniciantes.
   // - Usuário recorrente recebe sugestões baseadas no gosto do usuário.
+  const normalizedFavoriteGenre = favoriteGenre?.trim().toLocaleLowerCase("pt-BR");
+  const isFavoriteGenre = (comic) =>
+    normalizedFavoriteGenre &&
+    (comic.genre || "").trim().toLocaleLowerCase("pt-BR") === normalizedFavoriteGenre;
   const recommendedComics = isNewUser
     ? comics.filter((comic) => comic.level === "Iniciante")
-    : comics.filter((comic) => comic.genre === favoriteGenre || ["Mestre", "Lendário"].includes(comic.level));
+    : comics
+        .filter(
+          (comic) =>
+            isFavoriteGenre(comic) ||
+            ["Mestre", "Lendário"].includes(comic.level)
+        )
+        .sort((first, second) => Number(isFavoriteGenre(second)) - Number(isFavoriteGenre(first)));
 
   return (
     <section className="recommendations-section" aria-labelledby="recommendationsTitle">
@@ -18,7 +28,9 @@ function Recommendations({ comics, isNewUser, favoriteGenre }) {
       <p className="recommendation-note">
         {isNewUser
           ? "Como este perfil é novo, a vitrine prioriza autores iniciantes para gerar visibilidade imediata."
-          : `Recomendações baseadas no gosto por ${favoriteGenre} e autores com alto engajamento.`}
+          : favoriteGenre
+            ? `Recomendações baseadas no gosto por ${favoriteGenre} e autores com alto engajamento.`
+            : "Defina seu gênero preferido no perfil para receber sugestões mais personalizadas."}
       </p>
 
       <div className="recommendations-grid">

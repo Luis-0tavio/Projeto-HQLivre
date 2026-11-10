@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/autenticacao_provider.jsx";
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import Catalog from "./components/Catalog.jsx";
@@ -21,20 +22,12 @@ function getReadingReward(authorLevel) {
 
 function App() {
   const navigate = useNavigate();
+  const { favoriteGenre } = useAuth();
   // useState responsável por guardar o saldo atual do leitor.
   // Toda vez que o usuário clicar em "Simular leitura", este estado será atualizado.
   const [readerPoints, setReaderPoints] = useState(0);
   const [completedComicIds, setCompletedComicIds] = useState(() => new Set());
   const [catalogComics, setCatalogComics] = useState(() => comics);
-
-  // useState que simula o tipo de usuário.
-  // Se for true, a seção "Pode gostar" prioriza autores iniciantes.
-  // Em uma aplicação real, isso viria de autenticação, data de cadastro ou histórico de leitura.
-  const [isNewUser] = useState(true);
-
-  // useState que representa o gosto principal do leitor.
-  // Mantemos este valor simples para demonstrar a regra de recomendação quando isNewUser for false.
-  const [favoriteGenre] = useState("Fantasia");
 
   // useState central dos filtros do catálogo.
   // O objeto concentra todos os filtros para facilitar a leitura e o envio para componentes filhos.
@@ -157,7 +150,7 @@ function App() {
               onToggleLevel={toggleLevel}
               onReadComic={handleReadComic}
             />
-            <Recommendations comics={catalogComics} isNewUser={isNewUser} favoriteGenre={favoriteGenre} />
+            <Recommendations comics={catalogComics} isNewUser={false} favoriteGenre={favoriteGenre} />
           </main>
         } />
         <Route path="/comunidade" element={<ComunidadeLayout />} />
@@ -166,7 +159,7 @@ function App() {
         <Route path="/leitura/:comicId" element={<Reader comics={catalogComics} onComplete={handleCompleteReading} />} />
         <Route path="/fanarts" element={<main className="fanart-page"><FanartMural /></main>} />
         <Route path="/login" element={<Login />} />
-        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/perfil" element={<Perfil comics={catalogComics} />} />
       </Routes>
       <footer className="site-footer">
         <div className="footer-links">

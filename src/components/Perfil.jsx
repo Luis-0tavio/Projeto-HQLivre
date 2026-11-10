@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/autenticacao_provider.jsx";
 import { supabase } from "../lib/supabase.js";
+import Recommendations from "./Recommendations.jsx";
 
-function Perfil() {
-  const { user } = useAuth();
+function Perfil({ comics }) {
+  const { user, favoriteGenre: savedFavoriteGenre, setFavoriteGenre } = useAuth();
   const [perfil, setPerfil] = useState(null);
   const [loading, setLoading] = useState(true);
   const [aba, setAba] = useState("perfil");
@@ -86,11 +87,12 @@ function Perfil() {
     user?.avatar_url ||
     "https://as2.ftcdn.net/jpg/05/86/91/55/220_F_586915596_gPqgxPdgdJ4OXjv6GCcDWNxTjKDWZ3JD.jpg";
 
-  const generoPreferido =
+  const favoriteGenre =
     perfil?.genero_preferido ||
     user?.user_metadata?.genero_preferido ||
     user?.genero_preferido ||
-    "Sem gênero preferido";
+    savedFavoriteGenre;
+  const generoPreferido = favoriteGenre || "Sem gênero preferido";
 
   const handleChange = (campo) => (event) => {
     setForm((prev) => ({
@@ -123,6 +125,7 @@ function Perfil() {
     }
 
     setPerfil((prev) => ({ ...(prev || {}), ...payload }));
+    setFavoriteGenre(payload.genero_preferido || "");
     setAba("perfil");
   };
 
@@ -152,26 +155,33 @@ function Perfil() {
       </div>
 
       {aba === "perfil" ? (
-        <div className="perfil-container">
-          <div className="esquerda-profile">
-            <p>Bio: {perfil?.bio || "Sem bio"}</p>
-          </div>
+        <>
+          <div className="perfil-container">
+            <div className="esquerda-profile">
+              <p>Bio: {perfil?.bio || "Sem bio"}</p>
+            </div>
 
-          <div className="centro-profile">
-            <img src={avatarUrl} alt="Avatar do usuário" />
-            <p>{perfil?.nome || "Sem nome"}</p>
-          </div>
+            <div className="centro-profile">
+              <img src={avatarUrl} alt="Avatar do usuário" />
+              <p>{perfil?.nome || "Sem nome"}</p>
+            </div>
 
-          <div className="direita-profile">
-            <p>Email: {user.email}</p>
-            <p>Genero: {generoPreferido}</p>
-            <p>Pontos: {perfil?.pontos || 0}</p>
-            <p>Idade: {perfil?.idade || "Sem idade"}</p>
-            <p>HQs Publicadas: {user.hqs_publicadas || 0}</p>
-            <p>HQs Lidas: {perfil?.hqs_lidas || 0}</p>
-            <p>Ranking: {perfil?.ranking || "Sem ranking"}</p>
+            <div className="direita-profile">
+              <p>Email: {user.email}</p>
+              <p>Genero: {generoPreferido}</p>
+              <p>Pontos: {perfil?.pontos || 0}</p>
+              <p>Idade: {perfil?.idade || "Sem idade"}</p>
+              <p>HQs Publicadas: {user.hqs_publicadas || 0}</p>
+              <p>HQs Lidas: {perfil?.hqs_lidas || 0}</p>
+              <p>Ranking: {perfil?.ranking || "Sem ranking"}</p>
+            </div>
           </div>
-        </div>
+          <Recommendations
+            comics={comics}
+            isNewUser={false}
+            favoriteGenre={favoriteGenre}
+          />
+        </>
       ) : (
         <form className="perfil-form" onSubmit={salvarPerfil}>
           <label>
